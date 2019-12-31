@@ -1,0 +1,17 @@
+//Start spark shell using Databricks Spark CSV package
+spark-shell --packages com.databricks:spark-csv_2.10:1.5.0
+
+//Create sqlContext and import required libraries
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+import sqlContext.implicits._
+
+//Create Dataframe from input file
+val earthquake_df = sqlContext.read.format("com.databricks.spark.csv").option("header","true").option("mode","DROPMALFORMED").load("file:///home/khandelwalpraful8884/data.xls")
+
+//Create queries
+earthquake_df.withColumn("Total Weight",$"First Activity Time1" + $"Time Taken2" + $"Acceleration3" + $"Building Strength4" + $"Velocity5" + $"Sa6" + $"Sd7" + $"First Activity Time8" + $"Time Taken9" + $"Acceleration10" + $"Building Strength11" + $"Velocity12" + $"Sa13" + $"Sd14").show(5)
+earthquake_df.filter($"Velocity5" === earthquake_df.agg(max("Velocity5")).head().getAs[Double](0)).select("Velocity5", "Building Strength4").distinct().show()
+earthquake_df.agg(mean("Sa6")).head().getAs[Double](0)
+earthquake_df.agg(mean("Sa13")).head().getAs[Double](0)
+earthquake_df.filter($"Building Strength11" >= 25).count()
+earthquake_df.filter($"Time Taken2" === earthquake_df.agg(max("Time Taken2")).head().getAs[Double](0)).select("Time Taken2", "Velocity5").distinct().show()
