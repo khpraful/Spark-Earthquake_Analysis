@@ -6,7 +6,7 @@ val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 import sqlContext.implicits._
 
 //Create Dataframe from input file
-val earthquake_df = sqlContext.read.format("com.databricks.spark.csv").option("header","true").option("mode","DROPMALFORMED").load("file:///home/khandelwalpraful8884/data.xls")
+val earthquake_df = sqlContext.read.format("com.databricks.spark.csv").option("header","true").option("mode","DROPMALFORMED").load("file:///<path to file>/data.xls")
 
 //Create queries
 earthquake_df.withColumn("Total Weight",$"First Activity Time1" + $"Time Taken2" + $"Acceleration3" + $"Building Strength4" + $"Velocity5" + $"Sa6" + $"Sd7" + $"First Activity Time8" + $"Time Taken9" + $"Acceleration10" + $"Building Strength11" + $"Velocity12" + $"Sa13" + $"Sd14").show(5)
