@@ -9,9 +9,14 @@ import sqlContext.implicits._
 val earthquake_df = sqlContext.read.format("com.databricks.spark.csv").option("header","true").option("mode","DROPMALFORMED").load("file:///<path to file>/data.xls")
 
 //Create queries
+//Insert a column “Total Weight” which contains sum of respective cells in (II) to (XV)
 earthquake_df.withColumn("Total Weight",$"First Activity Time1" + $"Time Taken2" + $"Acceleration3" + $"Building Strength4" + $"Velocity5" + $"Sa6" + $"Sd7" + $"First Activity Time8" + $"Time Taken9" + $"Acceleration10" + $"Building Strength11" + $"Velocity12" + $"Sa13" + $"Sd14").show(5)
+//Find the Building Strength(s) for the maximum velocity in the Primary Wave
 earthquake_df.filter($"Velocity5" === earthquake_df.agg(max("Velocity5")).head().getAs[Double](0)).select("Velocity5", "Building Strength4").distinct().show()
+//Find the average value of Sa for both primary and secondary wave
 earthquake_df.agg(mean("Sa6")).head().getAs[Double](0)
 earthquake_df.agg(mean("Sa13")).head().getAs[Double](0)
+//Count the number of instances where Building strength remains equal to or greater than 25 after the secondary wave
 earthquake_df.filter($"Building Strength11" >= 25).count()
+//Find the velocity for the primary wave which takes the maximum time
 earthquake_df.filter($"Time Taken2" === earthquake_df.agg(max("Time Taken2")).head().getAs[Double](0)).select("Time Taken2", "Velocity5").distinct().show()
